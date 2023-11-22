@@ -34,7 +34,6 @@ jobs:
         uses: actions/setup-node@main
         with:
           cache: "pnpm"
-          cache-dependency-path: ./pnpm-lock.yaml
       
       - name: New branch
         run: |
