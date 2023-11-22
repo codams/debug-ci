@@ -20,7 +20,7 @@ jobs:
   # ----------------------------------------------------------------------------------------------
   changed_files:
     runs-on: ubuntu-latest  # windows-latest || macos-latest
-    name: Test changed-files
+    name: Releases automation
     env:
           GH_USERNAME: ${{github.actor}}
     steps:
