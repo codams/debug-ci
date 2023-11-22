@@ -1,3 +1,5 @@
+[![CI](https://github.com/happywait/debug-ci/actions/workflows/releases.yml/badge.svg?branch=main&event=workflow_dispatch)](https://github.com/happywait/debug-ci/actions/workflows/releases.yml)
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
