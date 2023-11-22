@@ -7,6 +7,11 @@ on:
         description: 'New version'
         required: false
         type: string
+      branch:
+        description: 'Branch'
+        required: false
+        type: string
+
 
 jobs:
 
@@ -34,25 +39,28 @@ jobs:
         with:
           cache: "pnpm"
           cache-dependency-path: ./pnpm-lock.yaml
-
+      
       - name: New branch
         run: |
+          switchoc = "!f() { git switch $1 2>/dev/null || git switch -c $1; }; f"
           git config --global user.email "${GH_USERNAME}@users.noreply.github.com"
           git config --global user.name "${GH_USERNAME}"
-          trimmed_version=$(echo ${{github.event.inputs.newVersion}} | rev | cut -d '.' -f 2- | rev)
-          git switch -c "release/#$trimmed_version"
-          git push -u origin "release/#$trimmed_version"
+          git switchoc "release/#${{ github.event.inputs.branch }}"
+          git push -u origin "release/#${{ github.event.inputs.branch }}"
 
       - name: Update version
         run: |
           git config --global user.email "${GH_USERNAME}@users.noreply.github.com"
           git config --global user.name "${GH_USERNAME}"
+          git sw "release/#${{ github.event.inputs.branch }}"
           pnpm version ${{ github.event.inputs.newVersion }}
+          git add . && git commit -m 'ci: bump version' && git push
 
       - name: Tag version
         run: |
           git config --global user.email "${GH_USERNAME}@users.noreply.github.com"
           git config --global user.name "${GH_USERNAME}"
+          git sw "release/#${{ github.event.inputs.branch }}"
           git tag -a ${{ github.event.inputs.newVersion }} -m ""
           git push origin ${{ github.event.inputs.newVersion }}
         
