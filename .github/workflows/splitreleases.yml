@@ -65,5 +65,8 @@ jobs:
         uses: ./.github/workflows/ci-tag.yml
         with:
           newVersion: ${{ github.event.inputs.newVersion }}
+          GH_USERNAME: ${{github.actor}}
+        needs: 
+          - releases
         
       
