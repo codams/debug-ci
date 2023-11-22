@@ -48,7 +48,7 @@ jobs:
           git config --global user.name "${GH_USERNAME}"
           trimmed_version=$(echo ${{github.event.inputs.newVersion}} | rev | cut -d '.' -f 2- | rev)
           git switch -c "release/#$trimmed_version"
-          git push -u "release/#$trimmed_version"
+          git push -u origin "release/#$trimmed_version"
 
       - name: Update version
         run: |
