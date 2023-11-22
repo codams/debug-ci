@@ -53,7 +53,7 @@ jobs:
           trimmed_version=$(echo ${{github.event.inputs.newVersion}} | rev | cut -d '.' -f 2- | rev)
           git switch "release/#$trimmed_version"
           pnpm version ${{ github.event.inputs.newVersion }}
-          git add . && git commit -m 'ci: bump version' && git push
+          git push
 
       - name: Tag version
         run: |
