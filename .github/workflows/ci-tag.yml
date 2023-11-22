@@ -14,8 +14,8 @@ jobs:
     steps:
       - name: Tag version
         run: |
-          git config --global user.email "${inputs.ghUsername}@users.noreply.github.com"
-          git config --global user.name "${inputs.ghUsername}"
+          git config --global user.email "${{inputs.ghUsername}}@users.noreply.github.com"
+          git config --global user.name "${{inputs.ghUsername}}"
           trimmed_version=$(echo ${{inputs.newVersion}} | rev | cut -d '.' -f 2- | rev)
           git switch "release/$trimmed_version"
           git tag -a ${{ inputs.newVersion }} -m ""
