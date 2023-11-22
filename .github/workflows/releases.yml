@@ -42,9 +42,9 @@ jobs:
           trimmed_version=$(echo ${{github.event.inputs.newVersion}} | rev | cut -d '.' -f 2- | rev)
           git config --global user.email "${GH_USERNAME}@users.noreply.github.com"
           git config --global user.name "${GH_USERNAME}"
-          git switch "release/#trimmed_version" 2>/dev/null || git switch -c "release/#trimmed_version";
+          git switch "release/#$trimmed_version" 2>/dev/null || git switch -c "release/#$trimmed_version";
 
-          git push -u origin "release/#trimmed_version"
+          git push -u origin "release/#$trimmed_version"
 
       - name: Update version
         run: |
