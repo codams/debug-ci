@@ -40,5 +40,5 @@ jobs:
 
       - name: Update version
         run: |
-          pnpm version ${{input.newVersion}}
+          pnpm version "${{github.event.inputs.newVersion}}""
       
