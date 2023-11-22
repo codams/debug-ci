@@ -26,6 +26,8 @@ jobs:
         with:
           fetch-depth: 0  # OR "2" -> To retrieve the preceding commit.
 
+
+
       - name: Install pnpm package manager
         uses: pnpm/action-setup@v2
         with:
@@ -40,7 +42,9 @@ jobs:
 
       - name: Update version
         run: |
-          pnpm version ${{github.event.inputs.newVersion}}
+          git config --global user.email "${GH_USERNAME}@users.noreply.github.com"
+          git config --global user.name "${GH_USERNAME}"
+          pnpm version ${{ github.event.inputs.newVersion }}
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_USERNAME: ${{github.actor}}
       
