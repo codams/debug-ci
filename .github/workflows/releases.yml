@@ -38,6 +38,7 @@ jobs:
       
       - name: New branch
         run: |
+          hopt -s expand_aliases
           alias switchoc = "!f() { git switch $1 2>/dev/null || git switch -c $1; }; f"
           trimmed_version=$(echo ${{github.event.inputs.newVersion}} | rev | cut -d '.' -f 2- | rev)
           git config --global user.email "${GH_USERNAME}@users.noreply.github.com"
