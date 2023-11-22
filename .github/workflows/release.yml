@@ -47,12 +47,19 @@ jobs:
           git config --global user.email "${GH_USERNAME}@users.noreply.github.com"
           git config --global user.name "${GH_USERNAME}"
           trimmed_version=$(echo ${{github.event.inputs.newVersion}} | rev | cut -d '.' -f 2- | rev)
-          git sw -c "release/#$trimmed_version"
+          git switch -c "release/#$trimmed_version"
 
       - name: Update version
         run: |
           git config --global user.email "${GH_USERNAME}@users.noreply.github.com"
           git config --global user.name "${GH_USERNAME}"
           pnpm version ${{ github.event.inputs.newVersion }}
+
+      - name: Tag version
+        run: |
+          git config --global user.email "${GH_USERNAME}@users.noreply.github.com"
+          git config --global user.name "${GH_USERNAME}"
+          git tag -a ${{ github.event.inputs.newVersion }} -m ""
+          git push origin ${{ github.event.inputs.newVersion }}
         
       
