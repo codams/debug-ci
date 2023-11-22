@@ -9,15 +9,7 @@ on:
         type: string
 
 jobs:
-  # -------------------------------------------------------------
-  # Using GitHub's API is not supported for push events
-  # -------------------------------------------------------------
-  # 
-  # ----------------------------------------------------------------------------------------------
-  # Using local .git history
-  # ----------------------------------------------------------------------------------------------
-  # Event `push`: Compare the preceding remote commit -> to the current commit of the main branch 
-  # ----------------------------------------------------------------------------------------------
+
   releases:
     runs-on: ubuntu-latest  # windows-latest || macos-latest
     name: Releases automation
@@ -38,7 +30,7 @@ jobs:
           run_install: false
 
       - name: Use Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@main
         with:
           cache: "pnpm"
           cache-dependency-path: ./pnpm-lock.yaml
