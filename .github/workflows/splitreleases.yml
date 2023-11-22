@@ -1,0 +1,69 @@
+name: CI
+
+on:
+  workflow_dispatch:
+    inputs:
+      newVersion:
+        description: 'New version'
+        required: true
+        type: string
+
+
+jobs:
+
+  releases:
+    runs-on: ubuntu-latest  # windows-latest || macos-latest
+    name: Releases automation
+    environment: ci
+    env:
+          GH_USERNAME: ${{github.actor}}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # OR "2" -> To retrieve the preceding commit.
+
+      - name: Install pnpm package manager
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8
+          run_install: false
+
+      - name: Use Node.js
+        uses: actions/setup-node@main
+      
+      - name: New branch
+        run: |
+          trimmed_version=$(echo ${{github.event.inputs.newVersion}} | rev | cut -d '.' -f 2- | rev)
+          git config --global user.email "${GH_USERNAME}@users.noreply.github.com"
+          git config --global user.name "${GH_USERNAME}"
+          git switch "release/$trimmed_version" 2>/dev/null || git switch -c "release/$trimmed_version";
+          git push -u origin "release/$trimmed_version"
+
+      - name: Update version
+        run: |
+          git config --global user.email "${GH_USERNAME}@users.noreply.github.com"
+          git config --global user.name "${GH_USERNAME}"
+          trimmed_version=$(echo ${{github.event.inputs.newVersion}} | rev | cut -d '.' -f 2- | rev)
+          git switch "release/$trimmed_version"
+          pnpm version ${{ github.event.inputs.newVersion }}
+          git push
+
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
+        with:
+          tag_name: ${{ github.event.inputs.newVersion }}
+          release_name: Release ${{ github.event.inputs.newVersion }}
+          body: |
+            TO FILL
+          draft: true
+          prerelease: true
+
+  tag-version:
+        uses: https://github.com/happywait/debug-ci/blob/main/.github/workflows/ci-tag.yml@main
+        with:
+          newVersion: ${{ github.event.inputs.newVersion }}
+        
+      
