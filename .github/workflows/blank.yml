@@ -1,9 +1,12 @@
 name: CI
 
 on:
-  push:
-    branches:
-      - main
+  workflow_dispatch:
+    inputs:
+      newVersion:
+        description: 'Log level'
+        required: false
+        type: string
 
 jobs:
   # -------------------------------------------------------------
@@ -23,46 +26,20 @@ jobs:
         with:
           fetch-depth: 0  # OR "2" -> To retrieve the preceding commit.
 
-      - name: Get changed files
-        id: changed-files
-        uses: tj-actions/changed-files@v40
+      - name: Install pnpm package manager
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8
+          run_install: false
 
-      # NOTE: `since_last_remote_commit: true` is implied by default and falls back to the previous local commit.
+      - name: Use Node.js
+        uses: actions/setup-node@v3
+        with:
+          cache: "pnpm"
+          cache-dependency-path: servers/frontend/pnpm-lock.yaml
 
-      - name: List all changed files
+      - name: Update version
         run: |
-          for file in ${{ steps.changed-files.outputs.all_changed_files }}; do
-            echo "$file was changed"
-          done
-
-      - name: get-npm-version
-        id: package-version
-        uses: martinbeentjes/npm-get-version-action@v1.3.1
-
-      - name: display
-        id: display
-        run: |
-          echo ${{ steps.package-version.outputs.current-version}}
-
-      - name: Clean Versions
-        run: |
-              echo "TAG_VERSION=$(echo ${{env.TAG}} | tr -dc '0-9')" >> $GITHUB_ENV
-              echo "PACKAGE_VERSION=$(echo ${{env.PACKAGE}} | tr -dc '0-9')" >> $GITHUB_ENV
-
-      - name: Not sure
-        run: |
-          echo "TAG_NUMBER=$echo$((${{env.TAG_VERSION}} - 0 ))" >> $GITHUB_ENV
-          echo "PACKAGE_NUMBER=$echo$((${{env.PACKAGE_VERSION}} - 0 ))" >> $GITHUB_ENV
-
-      - name: Compare Versions
-        run: |
-          if (( ${{env.PACKAGE_NUMBER}} > ${{env.TAG_NUMBER}} )); then
-              echo "PUSH=true" >> "$GITHUB_ENV"
-
-          elif (( ${{env.PACKAGE_NUMBER}} = ${{env.TAG_NUMBER}} )); then
-              echo "PUSH=false" >> "$GITHUB_ENV"
-
-          else
-              echo "PUSH=false" >> "$GITHUB_ENV"
-          fi         
-
+          pnpm version input.newVersion
+      
+      
