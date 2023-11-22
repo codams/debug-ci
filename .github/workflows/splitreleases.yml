@@ -62,7 +62,7 @@ jobs:
           prerelease: true
 
   tag-version:
-        uses: ./ci-tag.yml@main
+        uses: ./.github/workflows/ci-tag.yml@main
         with:
           newVersion: ${{ github.event.inputs.newVersion }}
         
