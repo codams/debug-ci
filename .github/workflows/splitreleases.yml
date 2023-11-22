@@ -62,7 +62,7 @@ jobs:
           prerelease: true
 
   tag-version:
-        uses: happywait/debug-ci/blob/main/.github/workflows/ci-tag.yml@main
+        uses: ./ci-tag.yml@main
         with:
           newVersion: ${{ github.event.inputs.newVersion }}
         
