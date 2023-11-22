@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       newVersion:
-        description: 'Log level'
+        description: 'New version'
         required: false
         type: string
 
@@ -41,5 +41,4 @@ jobs:
       - name: Update version
         run: |
           pnpm version input.newVersion
-      
       
