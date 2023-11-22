@@ -7,10 +7,6 @@ on:
         description: 'New version'
         required: false
         type: string
-      branch:
-        description: 'Branch'
-        required: false
-        type: string
 
 
 jobs:
@@ -43,16 +39,18 @@ jobs:
       - name: New branch
         run: |
           switchoc = "!f() { git switch $1 2>/dev/null || git switch -c $1; }; f"
+          trimmed_version=$(echo ${{github.event.inputs.newVersion}} | rev | cut -d '.' -f 2- | rev)
           git config --global user.email "${GH_USERNAME}@users.noreply.github.com"
           git config --global user.name "${GH_USERNAME}"
-          git switchoc "release/#${{ github.event.inputs.branch }}"
-          git push -u origin "release/#${{ github.event.inputs.branch }}"
+          git switchoc "release/#trimmed_version"
+          git push -u origin "release/#trimmed_version"
 
       - name: Update version
         run: |
           git config --global user.email "${GH_USERNAME}@users.noreply.github.com"
           git config --global user.name "${GH_USERNAME}"
-          git sw "release/#${{ github.event.inputs.branch }}"
+          trimmed_version=$(echo ${{github.event.inputs.newVersion}} | rev | cut -d '.' -f 2- | rev)
+          git sw "release/#$trimmed_version"
           pnpm version ${{ github.event.inputs.newVersion }}
           git add . && git commit -m 'ci: bump version' && git push
 
@@ -60,7 +58,8 @@ jobs:
         run: |
           git config --global user.email "${GH_USERNAME}@users.noreply.github.com"
           git config --global user.name "${GH_USERNAME}"
-          git sw "release/#${{ github.event.inputs.branch }}"
+          trimmed_version=$(echo ${{github.event.inputs.newVersion}} | rev | cut -d '.' -f 2- | rev)
+          git sw "release/#$trimmed_version"
           git tag -a ${{ github.event.inputs.newVersion }} -m ""
           git push origin ${{ github.event.inputs.newVersion }}
         
